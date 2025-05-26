@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Anúncio Fácil IA - Painel Interativo</title>
+  <title>Anúncio Fácil IA</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -16,73 +16,68 @@
       background-color: #2a68c8;
       color: white;
       text-align: center;
-      padding: 20px 10px;
+      padding: 20px;
     }
     .container {
       max-width: 800px;
       margin: 20px auto;
       background: white;
-      border-radius: 10px;
       padding: 20px;
+      border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    .info-box {
-      background-color: #eaf1ff;
-      padding: 15px;
+    .info {
+      background: #eaf1ff;
       border-left: 5px solid #2a68c8;
+      padding: 15px;
       margin-bottom: 20px;
     }
-    .chat-box {
-      display: flex;
-      flex-direction: column;
+    .chat {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 15px;
       height: 400px;
       overflow-y: auto;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 10px;
       margin-bottom: 10px;
     }
-    .message {
-      margin: 8px 0;
-      padding: 10px;
-      border-radius: 10px;
-      max-width: 75%;
+    .msg {
+      margin: 10px 0;
+      padding: 10px 15px;
+      border-radius: 8px;
+      max-width: 90%;
+      white-space: pre-wrap;
     }
-    .user {
-      background-color: #cde5ff;
-      align-self: flex-end;
-    }
-    .bot {
-      background-color: #eeeeee;
-      align-self: flex-start;
-    }
+    .user { background: #cde5ff; align-self: flex-end; }
+    .bot { background: #f3f3f3; align-self: flex-start; }
     .input-area {
       display: flex;
+      flex-direction: column;
       gap: 10px;
     }
     textarea {
-      flex: 1;
+      width: 100%;
+      font-size: 16px;
       padding: 10px;
       border-radius: 6px;
       border: 1px solid #ccc;
-      font-size: 16px;
+      resize: none;
     }
     input[type="file"] {
-      margin-bottom: 10px;
+      padding: 10px;
     }
     button {
       background-color: #2a68c8;
       color: white;
       border: none;
-      padding: 10px 20px;
+      padding: 12px;
+      font-size: 16px;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 16px;
     }
     img {
       max-width: 100%;
-      border-radius: 10px;
       margin-top: 10px;
+      border-radius: 10px;
     }
   </style>
 </head>
@@ -92,125 +87,118 @@
   </header>
 
   <div class="container">
-    <div class="info-box">
+    <div class="info">
       <p><strong>O que este assistente faz:</strong></p>
       <ul>
         <li>✓ Gera 5 títulos com palavras-chave</li>
         <li>✓ Cria descrição profissional e persuasiva</li>
-        <li>✓ Gera 5 imagens com base na imagem enviada (.png)</li>
+        <li>✓ Gera 5 imagens com base na imagem enviada (modelo vestindo a peça)</li>
       </ul>
     </div>
 
     <p><strong>Créditos restantes:</strong> 10</p>
 
-    <input type="file" id="imagemProduto" accept="image/png" />
-
-    <div class="chat-box" id="chat"></div>
+    <input type="file" id="uploadImg" accept="image/png" />
+    <div class="chat" id="chat"></div>
 
     <div class="input-area">
-      <textarea id="input" placeholder="Digite sua mensagem..."></textarea>
-      <button onclick="enviarMensagem()">Enviar</button>
+      <textarea id="userInput" rows="3" placeholder="Descreva sua peça de roupa aqui..."></textarea>
+      <button onclick="enviar()">Enviar</button>
     </div>
   </div>
 
   <script>
     const apiKey = "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";
-    const chatBox = document.getElementById("chat");
-    const inputField = document.getElementById("input");
-    const imagemInput = document.getElementById("imagemProduto");
+    const chat = document.getElementById("chat");
+    const upload = document.getElementById("uploadImg");
+    const input = document.getElementById("userInput");
 
-    let chatHistory = [
-      {
-        role: "system",
-        content: "Você é um assistente chamado Anúncio Shopee, criado por Rangel Furlaneto. Sua função é ajudar vendedores a criarem anúncios completos para Mercado Livre e Shopee. Ao receber uma mensagem do usuário, gere uma resposta educada, clara, comercial e útil. Explique como funciona, incentive o envio da imagem em .png e peça detalhes da peça como tipo, tecido, tamanhos, vantagens. Não use emojis. Converse como um assistente profissional e amigável."
-      }
-    ];
+    function renderMsg(msg, role = "user") {
+      const div = document.createElement("div");
+      div.className = "msg " + (role === "user" ? "user" : "bot");
+      div.innerHTML = msg;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
 
-    async function enviarMensagem() {
-      const userText = inputField.value.trim();
-      if (!userText && !imagemInput.files.length) return;
+    async function enviar() {
+      const texto = input.value.trim();
+      const arquivo = upload.files[0];
 
-      mostrarMensagem(userText, "user");
-      chatHistory.push({ role: "user", content: userText });
-      inputField.value = "";
+      if (!texto && !arquivo) return;
 
-      if (imagemInput.files.length > 0) {
-        const file = imagemInput.files[0];
-        if (file.type !== "image/png") {
-          mostrarMensagem("⚠️ A imagem precisa estar em formato PNG.", "bot");
-          return;
-        }
+      renderMsg(texto, "user");
 
-        mostrarMensagem("🔄 Gerando anúncio com base na imagem...", "bot");
+      if (arquivo && arquivo.type === "image/png") {
+        renderMsg("Gerando anúncio com base na imagem...", "bot");
 
-        const completion = await fetch("https://api.openai.com/v1/chat/completions", {
+        // Descrição + títulos
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
+            Authorization: `Bearer ${apiKey}`
           },
           body: JSON.stringify({
             model: "gpt-4",
             messages: [
               {
                 role: "system",
-                content: `Você é um assistente especialista em Shopee e Mercado Livre. Sempre que o usuário fornecer informações simples sobre a peça, gere:
-- 5 títulos otimizados com palavras-chave
-- uma descrição completa, profissional e objetiva
-Não use emojis.`
+                content: "Você é um assistente de anúncios chamado Anúncio Shopee. Gere 5 títulos otimizados com palavras-chave. Depois, uma descrição persuasiva e separada por parágrafos com os benefícios e tabela de tamanhos. Formate como se fosse um anúncio profissional. Sem emojis."
               },
-              { role: "user", content: userText }
+              { role: "user", content: texto }
             ]
           })
         });
-        const completionJson = await completion.json();
-        const textResponse = completionJson.choices[0].message.content;
-        mostrarMensagem(textResponse, "bot");
+        const json = await response.json();
+        renderMsg(json.choices[0].message.content, "bot");
 
-        const formData = new FormData();
-        formData.append("image", file);
-        formData.append("n", "5");
-        formData.append("size", "1024x1024");
+        // Imagens geradas com prompt estilo do GPT personalizado
+        for (let i = 0; i < 5; i++) {
+          const imgResp = await fetch("https://api.openai.com/v1/images/generations", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+              model: "dall-e-3",
+              prompt: `Foto de uma modelo feminina vestindo a peça descrita: ${texto}. Fundo claro e elegante, estilo comercial para marketplaces como Shopee e Mercado Livre.`,
+              n: 1,
+              size: "1024x1024"
+            })
+          });
+          const data = await imgResp.json();
+          if (data.data && data.data[0]) {
+            renderMsg('<img src="' + data.data[0].url + '">', "bot");
+          }
+        }
 
-        const imgResponse = await fetch("https://api.openai.com/v1/images/variations", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${apiKey}`,
-          },
-          body: formData
-        });
-
-        const imgJson = await imgResponse.json();
-        imgJson.data.forEach(img => {
-          mostrarMensagem(`<img src="${img.url}" alt="Imagem gerada">`, "bot");
-        });
-
-        imagemInput.value = "";
+        upload.value = "";
       } else {
-        const completion = await fetch("https://api.openai.com/v1/chat/completions", {
+        // Apenas texto, usa GPT-3.5
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
+            Authorization: `Bearer ${apiKey}`
           },
           body: JSON.stringify({
             model: "gpt-3.5-turbo",
-            messages: chatHistory
+            messages: [
+              {
+                role: "system",
+                content: "Você é um assistente comercial de anúncios chamado Anúncio Shopee. Responda de forma clara, profissional e útil, sem emojis. Estimule o envio da imagem da peça."
+              },
+              { role: "user", content: texto }
+            ]
           })
         });
-        const json = await completion.json();
-        const resposta = json.choices[0].message.content;
-        chatHistory.push({ role: "assistant", content: resposta });
-        mostrarMensagem(resposta, "bot");
+        const json = await response.json();
+        renderMsg(json.choices[0].message.content, "bot");
       }
-    }
 
-    function mostrarMensagem(texto, classe) {
-      const msg = document.createElement("div");
-      msg.className = `message ${classe}`;
-      msg.innerHTML = texto;
-      chatBox.appendChild(msg);
-      chatBox.scrollTop = chatBox.scrollHeight;
+      input.value = "";
     }
   </script>
 </body>
