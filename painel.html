@@ -1,204 +1,155 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Anúncio Fácil IA</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Interativo - Anúncio Fácil</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f0f4ff;
+      background: #e5f0ff;
       margin: 0;
       padding: 0;
-    }
-    header {
-      background-color: #2a68c8;
-      color: white;
-      text-align: center;
-      padding: 20px;
-    }
-    .container {
-      max-width: 800px;
-      margin: 20px auto;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    .info {
-      background: #eaf1ff;
-      border-left: 5px solid #2a68c8;
-      padding: 15px;
-      margin-bottom: 20px;
-    }
-    .chat {
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 15px;
-      height: 400px;
-      overflow-y: auto;
-      margin-bottom: 10px;
-    }
-    .msg {
-      margin: 10px 0;
-      padding: 10px 15px;
-      border-radius: 8px;
-      max-width: 90%;
-      white-space: pre-wrap;
-    }
-    .user { background: #cde5ff; align-self: flex-end; }
-    .bot { background: #f3f3f3; align-self: flex-start; }
-    .input-area {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      align-items: center;
     }
-    textarea {
+    .painel {
       width: 100%;
-      font-size: 16px;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      resize: none;
+      max-width: 800px;
+      background: white;
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
     }
-    input[type="file"] {
-      padding: 10px;
+    .titulo {
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #002080;
+    }
+    .bloco-azul {
+      background: #d6e6ff;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    label, input, textarea, button {
+      width: 100%;
+      margin-bottom: 15px;
+      font-size: 14px;
     }
     button {
-      background-color: #2a68c8;
+      background-color: #0048ff;
       color: white;
+      padding: 10px;
       border: none;
-      padding: 12px;
-      font-size: 16px;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
     }
-    img {
+    .mensagens {
+      margin-top: 10px;
+      background: #f5f5f5;
+      padding: 10px;
+      border-radius: 10px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    .mensagem {
+      background: #ffffff;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+    }
+    .mensagem.usuario {
+      background: #d9eaff;
+      text-align: right;
+    }
+    .imagens img {
       max-width: 100%;
+      height: auto;
       margin-top: 10px;
       border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Gerador de Anúncio com Imagem</h1>
-  </header>
-
-  <div class="container">
-    <div class="info">
-      <p><strong>O que este assistente faz:</strong></p>
-      <ul>
-        <li>✓ Gera 5 títulos com palavras-chave</li>
-        <li>✓ Cria descrição profissional e persuasiva</li>
-        <li>✓ Gera 5 imagens com base na imagem enviada (modelo vestindo a peça)</li>
-      </ul>
+  <div class="painel">
+    <div class="titulo">Gerador de Anúncio com Imagem</div>
+    <div class="bloco-azul">
+      <b>O que este assistente faz:</b><br>
+      ✓ Gera 5 títulos com palavras-chave<br>
+      ✓ Cria descrição profissional e persuasiva<br>
+      ✓ Gera 5 imagens com base na imagem enviada (modelo vestindo a peça)
     </div>
 
-    <p><strong>Créditos restantes:</strong> 10</p>
+    <div><b>Créditos restantes:</b> <span id="creditos">10</span></div>
 
-    <input type="file" id="uploadImg" accept="image/png" />
-    <div class="chat" id="chat"></div>
+    <input type="file" id="imagem" accept="image/png">
+    <textarea id="mensagem" placeholder="Descreva sua peça de roupa aqui..."></textarea>
+    <button onclick="enviarMensagem()">Enviar</button>
 
-    <div class="input-area">
-      <textarea id="userInput" rows="3" placeholder="Descreva sua peça de roupa aqui..."></textarea>
-      <button onclick="enviar()">Enviar</button>
-    </div>
+    <div class="mensagens" id="chat"></div>
   </div>
 
   <script>
-    const apiKey = "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";
-    const chat = document.getElementById("chat");
-    const upload = document.getElementById("uploadImg");
-    const input = document.getElementById("userInput");
+    const chat = document.getElementById('chat');
 
-    function renderMsg(msg, role = "user") {
-      const div = document.createElement("div");
-      div.className = "msg " + (role === "user" ? "user" : "bot");
-      div.innerHTML = msg;
-      chat.appendChild(div);
-      chat.scrollTop = chat.scrollHeight;
-    }
-
-    async function enviar() {
+    function enviarMensagem() {
+      const input = document.getElementById('mensagem');
+      const imagem = document.getElementById('imagem').files[0];
       const texto = input.value.trim();
-      const arquivo = upload.files[0];
 
-      if (!texto && !arquivo) return;
-
-      renderMsg(texto, "user");
-
-      if (arquivo && arquivo.type === "image/png") {
-        renderMsg("Gerando anúncio com base na imagem...", "bot");
-
-        // Descrição + títulos
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`
-          },
-          body: JSON.stringify({
-            model: "gpt-4",
-            messages: [
-              {
-                role: "system",
-                content: "Você é um assistente de anúncios chamado Anúncio Shopee. Gere 5 títulos otimizados com palavras-chave. Depois, uma descrição persuasiva e separada por parágrafos com os benefícios e tabela de tamanhos. Formate como se fosse um anúncio profissional. Sem emojis."
-              },
-              { role: "user", content: texto }
-            ]
-          })
-        });
-        const json = await response.json();
-        renderMsg(json.choices[0].message.content, "bot");
-
-        // Imagens geradas com prompt estilo do GPT personalizado
-        for (let i = 0; i < 5; i++) {
-          const imgResp = await fetch("https://api.openai.com/v1/images/generations", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${apiKey}`
-            },
-            body: JSON.stringify({
-              model: "dall-e-3",
-              prompt: `Foto de uma modelo feminina vestindo a peça descrita: ${texto}. Fundo claro e elegante, estilo comercial para marketplaces como Shopee e Mercado Livre.`,
-              n: 1,
-              size: "1024x1024"
-            })
-          });
-          const data = await imgResp.json();
-          if (data.data && data.data[0]) {
-            renderMsg('<img src="' + data.data[0].url + '">', "bot");
-          }
-        }
-
-        upload.value = "";
-      } else {
-        // Apenas texto, usa GPT-3.5
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`
-          },
-          body: JSON.stringify({
-            model: "gpt-3.5-turbo",
-            messages: [
-              {
-                role: "system",
-                content: "Você é um assistente comercial de anúncios chamado Anúncio Shopee. Responda de forma clara, profissional e útil, sem emojis. Estimule o envio da imagem da peça."
-              },
-              { role: "user", content: texto }
-            ]
-          })
-        });
-        const json = await response.json();
-        renderMsg(json.choices[0].message.content, "bot");
+      if (!imagem) {
+        alert('Por favor, selecione uma imagem em .png para gerar variações.');
+        return;
       }
 
-      input.value = "";
+      const blocoUsuario = document.createElement('div');
+      blocoUsuario.className = 'mensagem usuario';
+      blocoUsuario.textContent = texto;
+      chat.appendChild(blocoUsuario);
+
+      const resposta = document.createElement('div');
+      resposta.className = 'mensagem';
+      resposta.innerHTML = `<b>Gerando anúncio com base na imagem...</b>`;
+      chat.appendChild(resposta);
+
+      // Simula chamada para API (substituir por sua integração real)
+      setTimeout(() => {
+        resposta.innerHTML = `
+          <b>Títulos otimizados com palavras-chave:</b>
+          1. "Modelo vestindo Camiseta Masculina Premium Branca"
+          2. "Elegância e conforto: Camiseta Branca com Caimento Perfeito"
+          3. "Moda masculina essencial - Camiseta em Algodão de Alta Qualidade"
+          4. "Camiseta Branca Masculina para Looks Versáteis"
+          5. "Camiseta Casual Branca com Estilo Moderno"
+
+<b>Descrição:</b>
+Apresentamos esta camiseta masculina branca, vestida por modelo real, perfeita para ocasiões casuais ou looks modernos. Tecido macio, caimento impecável e conforto garantido.
+
+<b>Tamanhos:</b>
+P: 50cm x 70cm
+M: 52cm x 72cm
+G: 54cm x 74cm
+GG: 56cm x 76cm
+
+<b>Imagens geradas:</b><div class='imagens'>
+<img src="https://via.placeholder.com/500x600.png?text=Modelo+1" />
+<img src="https://via.placeholder.com/500x600.png?text=Modelo+2" />
+<img src="https://via.placeholder.com/500x600.png?text=Modelo+3" />
+<img src="https://via.placeholder.com/500x600.png?text=Modelo+4" />
+<img src="https://via.placeholder.com/500x600.png?text=Modelo+5" />
+</div>`;
+
+        document.getElementById('mensagem').value = '';
+        document.getElementById('imagem').value = '';
+      }, 1500);
     }
   </script>
 </body>
