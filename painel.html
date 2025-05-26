@@ -5,153 +5,194 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Anúncio Fácil IA</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
       background-color: #f0f4ff;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      color: #333;
     }
     header {
-      width: 100%;
-      background-color: #0044cc;
-      color: white;
-      padding: 10px 20px;
-      font-size: 1.2em;
-      text-align: left;
+      background-color: #ffffff;
+      padding: 1rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+    }
+    header h1 {
+      font-size: 1.25rem;
+      color: #333;
+      margin: 0;
     }
     .container {
       max-width: 800px;
-      width: 100%;
-      background: white;
-      padding: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      margin-top: 20px;
-      border-radius: 10px;
-    }
-    .chat-box {
-      max-height: 500px;
-      overflow-y: auto;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      padding: 10px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background-color: #fff;
       border-radius: 8px;
-      background-color: #f9f9f9;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
-    .user-msg, .bot-msg {
-      margin: 5px 0;
-      padding: 8px 12px;
-      border-radius: 8px;
-      max-width: 80%;
+    .description-box {
+      background-color: #e6f0ff;
+      padding: 1rem;
+      border-radius: 6px;
+      margin-bottom: 1.5rem;
     }
-    .user-msg {
-      background-color: #d1e7ff;
-      align-self: flex-end;
+    .description-box h2 {
+      font-size: 1.2rem;
+      margin-top: 0;
     }
-    .bot-msg {
-      background-color: #e6e6e6;
-      align-self: flex-start;
-    }
-    .input-area {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
     }
     input[type="file"] {
-      padding: 6px;
+      margin-top: 0.5rem;
     }
-    input[type="text"] {
-      padding: 8px;
+    textarea {
       width: 100%;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      min-height: 80px;
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      font-size: 1rem;
     }
     button {
-      padding: 10px;
-      background-color: #0044cc;
-      color: white;
+      margin-top: 1rem;
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      color: #fff;
+      background-color: #0066ff;
       border: none;
-      border-radius: 6px;
+      border-radius: 4px;
       cursor: pointer;
     }
-    .image-preview {
+    button:hover {
+      background-color: #0055dd;
+    }
+    .chat-box {
+      margin-top: 2rem;
+      border-top: 1px solid #ccc;
+      padding-top: 1rem;
+    }
+    .message {
+      margin: 0.5rem 0;
+      padding: 0.75rem;
+      border-radius: 6px;
+      max-width: 90%;
+    }
+    .message.user {
+      background-color: #d0e7ff;
+      align-self: flex-end;
+      text-align: right;
+    }
+    .message.bot {
+      background-color: #f4f4f4;
+    }
+    .chat-input {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    .chat-input input[type="text"] {
+      flex-grow: 1;
+      padding: 0.5rem;
+      font-size: 1rem;
+    }
+    .thumb-preview {
       display: flex;
       gap: 10px;
+      margin-top: 1rem;
       flex-wrap: wrap;
-      margin-top: 10px;
     }
-    .image-preview img {
-      max-width: 150px;
-      max-height: 150px;
+    .thumb-preview img {
+      width: 80px;
+      height: 80px;
       object-fit: cover;
       border-radius: 6px;
+      border: 1px solid #ccc;
     }
   </style>
 </head>
 <body>
-  <header>Anúncio Fácil IA</header>
+  <header>
+    <h1>Anúncio Fácil IA</h1>
+  </header>
   <div class="container">
-    <div class="chat-box" id="chatBox">
-      <div class="bot-msg">
-        Olá! Bem-vindo ao Anúncio Fácil. Me envie uma descrição simples da peça e até 3 imagens (modelo vestindo a roupa) para gerar seu anúncio.
-      </div>
+    <div class="description-box">
+      <h2>O que este assistente faz:</h2>
+      <ul>
+        <li>✓ Gera 5 títulos com palavras-chave</li>
+        <li>✓ Cria descrição profissional e persuasiva</li>
+        <li>✓ Gera 5 imagens com base na imagem enviada (modelo vestindo a peça)</li>
+      </ul>
     </div>
 
-    <div class="input-area">
-      <input type="file" id="imageInput" accept="image/png, image/jpeg" multiple />
-      <input type="text" id="userInput" placeholder="Digite sua mensagem aqui...">
-      <button onclick="sendMessage()">Enviar</button>
+    <label for="file">Escolher imagem da peça (.png):</label>
+    <input type="file" id="file" accept="image/png" multiple />
+    <div class="thumb-preview" id="preview"></div>
+
+    <label for="prompt">Descreva sua peça de roupa aqui:</label>
+    <textarea id="prompt" placeholder="Ex: Camiseta básica de algodão para o dia a dia..."></textarea>
+    <button onclick="enviarMensagem()">Enviar</button>
+
+    <div class="chat-box" id="chat">
+      <!-- Conversas aparecerão aqui -->
     </div>
 
-    <div class="image-preview" id="imagePreview"></div>
+    <div class="chat-input">
+      <input type="text" id="mensagem" placeholder="Digite sua mensagem..." />
+      <button onclick="responderMensagem()">Enviar</button>
+    </div>
   </div>
 
   <script>
-    const chatBox = document.getElementById("chatBox");
-    const imageInput = document.getElementById("imageInput");
-    const imagePreview = document.getElementById("imagePreview");
+    const preview = document.getElementById('preview');
+    const fileInput = document.getElementById('file');
 
-    function sendMessage() {
-      const userInput = document.getElementById("userInput");
-      const message = userInput.value.trim();
-      if (message === "") return;
-
-      const userMsg = document.createElement("div");
-      userMsg.className = "user-msg";
-      userMsg.textContent = message;
-      chatBox.appendChild(userMsg);
-      userInput.value = "";
-
-      simulateBotResponse(message);
-    }
-
-    function simulateBotResponse(message) {
-      const botMsg = document.createElement("div");
-      botMsg.className = "bot-msg";
-      if (message.toLowerCase().includes("imagem")) {
-        botMsg.textContent = "Recebi sua imagem! Em instantes vou gerar as 5 variações com modelo vestindo a peça e enviar os títulos e descrição formatados.";
-      } else {
-        botMsg.textContent = "Obrigado pela mensagem! Poderia complementar com detalhes do tecido, uso, tamanhos, etc.?";
-      }
-      chatBox.appendChild(botMsg);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    imageInput.addEventListener("change", () => {
-      imagePreview.innerHTML = "";
-      const files = imageInput.files;
-      Array.from(files).forEach(file => {
+    fileInput.addEventListener('change', () => {
+      preview.innerHTML = '';
+      for (const file of fileInput.files) {
         const reader = new FileReader();
-        reader.onload = (e) => {
-          const img = document.createElement("img");
+        reader.onload = function (e) {
+          const img = document.createElement('img');
           img.src = e.target.result;
-          imagePreview.appendChild(img);
+          preview.appendChild(img);
         };
         reader.readAsDataURL(file);
-      });
+      }
     });
+
+    function adicionarMensagem(texto, tipo) {
+      const chat = document.getElementById('chat');
+      const div = document.createElement('div');
+      div.className = `message ${tipo}`;
+      div.textContent = texto;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function enviarMensagem() {
+      const texto = document.getElementById('prompt').value;
+      if (texto.trim() !== '') {
+        adicionarMensagem(texto, 'user');
+        adicionarMensagem('Gerando anúncio com base na imagem...', 'bot');
+        // Aqui entraria a chamada real à API com imagem + prompt
+        // Após receber o retorno, apresentar as imagens e o texto
+      }
+    }
+
+    function responderMensagem() {
+      const texto = document.getElementById('mensagem').value;
+      if (texto.trim() !== '') {
+        adicionarMensagem(texto, 'user');
+        document.getElementById('mensagem').value = '';
+        adicionarMensagem('Olá! Como posso ajudar você hoje?', 'bot');
+      }
+    }
   </script>
 </body>
 </html>
