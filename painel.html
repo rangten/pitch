@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel - Anúncio Fácil IA</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4ff;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      color: #2a68c8;
+    }
+    .info {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    .info p {
+      margin: 0;
+    }
+    textarea {
+      width: 100%;
+      max-width: 600px;
+      height: 100px;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    input[type="file"] {
+      margin: 10px 0;
+    }
+    button {
+      background: #2a68c8;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .result {
+      margin-top: 30px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    img {
+      max-width: 100%;
+      margin-top: 15px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gerador de Anúncio</h1>
+
+  <div class="info">
+    <p><strong>📦 O que este assistente faz:</strong></p>
+    <p>✅ Gera <strong>5 títulos otimizados</strong> com palavras-chave.</p>
+    <p>✅ Cria uma <strong>descrição completa e persuasiva</strong> com foco em Shopee e Mercado Livre.</p>
+    <p>✅ Gera <strong>1 imagem realista</strong> da peça com fundo limpo.</p>
+    <p>✅ Tudo isso em segundos!</p>
+  </div>
+
+  <input type="file" id="imagemProduto" accept="image/*" />
+  <br>
+  <textarea id="input" placeholder="Ex: macaquinho branco de suplex com bojo e alças finas."></textarea><br>
+  <button onclick="gerarAnuncio()">Gerar Anúncio</button>
+
+  <div class="result" id="resposta"></div>
+
+  <script>
+    const apiKey = "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";
+    const usuario = localStorage.getItem("usuarioLogado");
+    if (!usuario) window.location.href = "index.html";
+
+    async function gerarAnuncio() {
+      const input = document.getElementById("input").value;
+      const out = document.getElementById("resposta");
+      out.innerHTML = "<p>⏳ Gerando anúncio e imagem...</p>";
+
+      const completion = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: "gpt-4",
+          messages: [
+            {
+              role: "system",
+              content: `Você é um assistente especialista em criar anúncios otimizados para Shopee e Mercado Livre. Sempre siga estas regras:
+
+1. Crie 5 títulos otimizados com palavras-chave.
+2. Em seguida, gere uma descrição profissional e completa destacando tecido, conforto, vantagens e usabilidade.
+3. Use emojis e quebras de linha para facilitar a leitura.
+4. Formate com títulos e parágrafos claros.
+5. Não invente medidas. Use apenas o que for descrito pelo usuário.`
+            },
+            { role: "user", content: input }
+          ]
+        })
+      });
+
+      const jsonText = await completion.json();
+      const texto = jsonText.choices[0].message.content;
+
+      const imagem = await fetch("https://api.openai.com/v1/images/generations", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: "dall-e-3",
+          prompt: `Foto para anúncio Shopee: ${input}. Fundo neutro, estilo comercial, sem modelo.`,
+          n: 1,
+          size: "1024x1024"
+        })
+      });
+
+      const imgJson = await imagem.json();
+      const imgUrl = imgJson.data[0].url;
+
+      out.innerHTML = `
+        <p>${texto.replace(/\n/g, "<br>")}</p>
+        <img src="${imgUrl}" alt="Imagem gerada" />
+      `;
+    }
+  </script>
+</body>
+</html>
