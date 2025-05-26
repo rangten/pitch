@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -25,7 +26,7 @@
       font-size: 16px;
       line-height: 1.6;
     }
-    textarea, input[type="file"] {
+    input[type="file"] {
       width: 100%;
       max-width: 600px;
       margin: 10px 0;
@@ -34,15 +35,30 @@
       border: 1px solid #ccc;
       font-size: 16px;
     }
+    .input-area {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 700px;
+      margin: 0 auto 10px;
+    }
+    textarea {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      resize: none;
+    }
     button {
       background: #2a68c8;
       color: white;
-      padding: 12px 24px;
+      padding: 12px 18px;
       border: none;
       border-radius: 6px;
       font-size: 16px;
       cursor: pointer;
-      margin: 10px 5px;
+      margin-left: 10px;
     }
     .result {
       margin-top: 30px;
@@ -71,16 +87,20 @@
   <h1>Gerador de Anúncio com Imagem</h1>
 
   <div class="info">
-    <p><strong>📦 O que este assistente faz:</strong></p>
-    <p>✅ Gera 5 títulos com palavras-chave</p>
-    <p>✅ Cria descrição profissional e persuasiva</p>
-    <p>✅ Gera 5 imagens com base na imagem enviada (.png)</p>
+    <p><strong>O que este assistente faz:</strong></p>
+    <p>✔ Gera 5 títulos com palavras-chave</p>
+    <p>✔ Cria descrição profissional e persuasiva</p>
+    <p>✔ Gera 5 imagens com base na imagem enviada (.png)</p>
   </div>
 
   <div class="credits" id="creditosRestantes">Créditos restantes: ...</div>
   <input type="file" id="imagemProduto" accept="image/png" />
-  <textarea id="input" placeholder="Descreva sua peça de roupa aqui..."></textarea><br>
-  <button onclick="gerarAnuncio()" id="botaoGerar">Gerar Anúncio</button>
+
+  <div class="input-area">
+    <textarea id="input" placeholder="Descreva sua peça de roupa aqui..."></textarea>
+    <button onclick="gerarAnuncio()">Enviar</button>
+  </div>
+
   <button onclick="logout()">Sair</button>
 
   <div class="result" id="resposta"></div>
@@ -121,10 +141,12 @@
           messages: [
             {
               role: "system",
-              content: `Você é um assistente especialista em criar anúncios otimizados para Shopee e Mercado Livre. Siga:
-1. Gere 5 títulos otimizados com palavras-chave.
-2. Crie uma descrição completa e persuasiva sobre a peça.
-3. Use emojis e formatação agradável.`
+              content: `Você é um assistente especialista em Shopee e Mercado Livre. Sempre que o usuário fornecer informações simples sobre a peça, gere:
+
+- 5 títulos otimizados com palavras-chave e estrutura comercial
+- uma descrição completa, profissional e objetiva
+
+Importante: Não utilize emojis. Use formatação limpa com espaçamento e quebras de linha.`
             },
             { role: "user", content: input }
           ]
@@ -165,8 +187,7 @@
         imagensHtml += `<img src="${img.url}" alt="Imagem gerada" />`;
       });
 
-      out.innerHTML = `<p>${texto.replace(/
-/g, "<br>")}</p>${imagensHtml}`;
+      out.innerHTML = `<p>${texto.replace(/\n/g, "<br>")}</p>${imagensHtml}`;
 
       creditos--;
       localStorage.setItem(creditosKey, creditos);
@@ -176,8 +197,6 @@
     function atualizarCreditos() {
       const span = document.getElementById("creditosRestantes");
       span.innerText = `Créditos restantes: ${creditos}`;
-      const botao = document.getElementById("botaoGerar");
-      botao.disabled = creditos <= 0;
     }
   </script>
 </body>
