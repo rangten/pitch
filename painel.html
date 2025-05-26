@@ -4,81 +4,113 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Painel Interativo - Anúncio Fácil IA</title>
+  <title>Anúncio Fácil IA - Painel Interativo</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #eef2ff;
-      padding: 0;
+      background-color: #f0f4ff;
       margin: 0;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
+      padding: 0;
+    }
+    header {
+      background-color: #2a68c8;
+      color: white;
+      text-align: center;
+      padding: 20px 10px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .info-box {
+      background-color: #eaf1ff;
+      padding: 15px;
+      border-left: 5px solid #2a68c8;
+      margin-bottom: 20px;
     }
     .chat-box {
-      flex: 1;
-      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      height: 400px;
       overflow-y: auto;
-      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 10px;
     }
     .message {
-      max-width: 80%;
-      margin: 10px;
-      padding: 12px;
+      margin: 8px 0;
+      padding: 10px;
       border-radius: 10px;
+      max-width: 75%;
     }
     .user {
-      background: #d1eaff;
+      background-color: #cde5ff;
       align-self: flex-end;
-      text-align: right;
     }
     .bot {
-      background: #eaeaea;
+      background-color: #eeeeee;
       align-self: flex-start;
-      text-align: left;
     }
     .input-area {
       display: flex;
-      padding: 10px;
-      background: #dde7ff;
-      align-items: center;
+      gap: 10px;
     }
     textarea {
       flex: 1;
       padding: 10px;
-      font-size: 16px;
-      resize: none;
       border-radius: 6px;
       border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    input[type="file"] {
+      margin-bottom: 10px;
     }
     button {
-      margin-left: 10px;
-      padding: 10px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 6px;
-      background: #2a68c8;
+      background-color: #2a68c8;
       color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
       cursor: pointer;
+      font-size: 16px;
     }
-    #imagemProduto {
-      margin: 10px;
-    }
-    .result img {
+    img {
       max-width: 100%;
-      margin-top: 15px;
       border-radius: 10px;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <div class="chat-box" id="chat"></div>
+  <header>
+    <h1>Gerador de Anúncio com Imagem</h1>
+  </header>
 
-  <input type="file" id="imagemProduto" accept="image/png" />
+  <div class="container">
+    <div class="info-box">
+      <p><strong>O que este assistente faz:</strong></p>
+      <ul>
+        <li>✓ Gera 5 títulos com palavras-chave</li>
+        <li>✓ Cria descrição profissional e persuasiva</li>
+        <li>✓ Gera 5 imagens com base na imagem enviada (.png)</li>
+      </ul>
+    </div>
 
-  <div class="input-area">
-    <textarea id="input" placeholder="Digite sua mensagem..."></textarea>
-    <button onclick="enviarMensagem()">Enviar</button>
+    <p><strong>Créditos restantes:</strong> 10</p>
+
+    <input type="file" id="imagemProduto" accept="image/png" />
+
+    <div class="chat-box" id="chat"></div>
+
+    <div class="input-area">
+      <textarea id="input" placeholder="Digite sua mensagem..."></textarea>
+      <button onclick="enviarMensagem()">Enviar</button>
+    </div>
   </div>
 
   <script>
@@ -88,7 +120,10 @@
     const imagemInput = document.getElementById("imagemProduto");
 
     let chatHistory = [
-      { role: "system", content: "Você é um assistente chamado Anúncio Shopee, criado por Rangel Furlaneto. Sua função é ajudar vendedores a criarem anúncios completos para Mercado Livre e Shopee. Ao receber uma mensagem do usuário, gere uma resposta educada, clara, comercial e útil. Explique como funciona, incentive o envio da imagem em .png e peça detalhes da peça como tipo, tecido, tamanhos, vantagens. Não use emojis. Converse como um assistente profissional e amigável." }
+      {
+        role: "system",
+        content: "Você é um assistente chamado Anúncio Shopee, criado por Rangel Furlaneto. Sua função é ajudar vendedores a criarem anúncios completos para Mercado Livre e Shopee. Ao receber uma mensagem do usuário, gere uma resposta educada, clara, comercial e útil. Explique como funciona, incentive o envio da imagem em .png e peça detalhes da peça como tipo, tecido, tamanhos, vantagens. Não use emojis. Converse como um assistente profissional e amigável."
+      }
     ];
 
     async function enviarMensagem() {
@@ -100,7 +135,6 @@
       inputField.value = "";
 
       if (imagemInput.files.length > 0) {
-        // GPT-4 + geração de imagem
         const file = imagemInput.files[0];
         if (file.type !== "image/png") {
           mostrarMensagem("⚠️ A imagem precisa estar em formato PNG.", "bot");
@@ -153,7 +187,6 @@ Não use emojis.`
 
         imagemInput.value = "";
       } else {
-        // GPT-3.5 para conversa simples
         const completion = await fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",
           headers: {
