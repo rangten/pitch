@@ -1,156 +1,157 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel Interativo - Anúncio Fácil</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anúncio Fácil IA</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #e5f0ff;
+      background-color: #f0f4ff;
       margin: 0;
       padding: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-    .painel {
+    header {
       width: 100%;
-      max-width: 800px;
-      background: white;
-      margin-top: 20px;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    }
-    .titulo {
-      text-align: center;
-      font-size: 24px;
-      margin-bottom: 20px;
-      color: #002080;
-    }
-    .bloco-azul {
-      background: #d6e6ff;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-    label, input, textarea, button {
-      width: 100%;
-      margin-bottom: 15px;
-      font-size: 14px;
-    }
-    button {
-      background-color: #0048ff;
+      background-color: #0044cc;
       color: white;
-      padding: 10px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      padding: 10px 20px;
+      font-size: 1.2em;
+      text-align: left;
     }
-    .mensagens {
-      margin-top: 10px;
-      background: #f5f5f5;
-      padding: 10px;
+    .container {
+      max-width: 800px;
+      width: 100%;
+      background: white;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-top: 20px;
       border-radius: 10px;
+    }
+    .chat-box {
       max-height: 500px;
       overflow-y: auto;
-    }
-    .mensagem {
-      background: #ffffff;
-      padding: 10px;
       margin-bottom: 10px;
+      border: 1px solid #ccc;
+      padding: 10px;
       border-radius: 8px;
-      white-space: pre-wrap;
+      background-color: #f9f9f9;
     }
-    .mensagem.usuario {
-      background: #d9eaff;
-      text-align: right;
+    .user-msg, .bot-msg {
+      margin: 5px 0;
+      padding: 8px 12px;
+      border-radius: 8px;
+      max-width: 80%;
     }
-    .imagens img {
-      max-width: 100%;
-      height: auto;
+    .user-msg {
+      background-color: #d1e7ff;
+      align-self: flex-end;
+    }
+    .bot-msg {
+      background-color: #e6e6e6;
+      align-self: flex-start;
+    }
+    .input-area {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    input[type="file"] {
+      padding: 6px;
+    }
+    input[type="text"] {
+      padding: 8px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      padding: 10px;
+      background-color: #0044cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .image-preview {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
       margin-top: 10px;
-      border-radius: 10px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .image-preview img {
+      max-width: 150px;
+      max-height: 150px;
+      object-fit: cover;
+      border-radius: 6px;
     }
   </style>
 </head>
 <body>
-  <div class="painel">
-    <div class="titulo">Gerador de Anúncio com Imagem</div>
-    <div class="bloco-azul">
-      <b>O que este assistente faz:</b><br>
-      ✓ Gera 5 títulos com palavras-chave<br>
-      ✓ Cria descrição profissional e persuasiva<br>
-      ✓ Gera 5 imagens com base na imagem enviada (modelo vestindo a peça)
+  <header>Anúncio Fácil IA</header>
+  <div class="container">
+    <div class="chat-box" id="chatBox">
+      <div class="bot-msg">
+        Olá! Bem-vindo ao Anúncio Fácil. Me envie uma descrição simples da peça e até 3 imagens (modelo vestindo a roupa) para gerar seu anúncio.
+      </div>
     </div>
 
-    <div><b>Créditos restantes:</b> <span id="creditos">10</span></div>
+    <div class="input-area">
+      <input type="file" id="imageInput" accept="image/png, image/jpeg" multiple />
+      <input type="text" id="userInput" placeholder="Digite sua mensagem aqui...">
+      <button onclick="sendMessage()">Enviar</button>
+    </div>
 
-    <input type="file" id="imagem" accept="image/png">
-    <textarea id="mensagem" placeholder="Descreva sua peça de roupa aqui..."></textarea>
-    <button onclick="enviarMensagem()">Enviar</button>
-
-    <div class="mensagens" id="chat"></div>
+    <div class="image-preview" id="imagePreview"></div>
   </div>
 
   <script>
-    const chat = document.getElementById('chat');
+    const chatBox = document.getElementById("chatBox");
+    const imageInput = document.getElementById("imageInput");
+    const imagePreview = document.getElementById("imagePreview");
 
-    function enviarMensagem() {
-      const input = document.getElementById('mensagem');
-      const imagem = document.getElementById('imagem').files[0];
-      const texto = input.value.trim();
+    function sendMessage() {
+      const userInput = document.getElementById("userInput");
+      const message = userInput.value.trim();
+      if (message === "") return;
 
-      if (!imagem) {
-        alert('Por favor, selecione uma imagem em .png para gerar variações.');
-        return;
-      }
+      const userMsg = document.createElement("div");
+      userMsg.className = "user-msg";
+      userMsg.textContent = message;
+      chatBox.appendChild(userMsg);
+      userInput.value = "";
 
-      const blocoUsuario = document.createElement('div');
-      blocoUsuario.className = 'mensagem usuario';
-      blocoUsuario.textContent = texto;
-      chat.appendChild(blocoUsuario);
-
-      const resposta = document.createElement('div');
-      resposta.className = 'mensagem';
-      resposta.innerHTML = `<b>Gerando anúncio com base na imagem...</b>`;
-      chat.appendChild(resposta);
-
-      // Simula chamada para API (substituir por sua integração real)
-      setTimeout(() => {
-        resposta.innerHTML = `
-          <b>Títulos otimizados com palavras-chave:</b>
-          1. "Modelo vestindo Camiseta Masculina Premium Branca"
-          2. "Elegância e conforto: Camiseta Branca com Caimento Perfeito"
-          3. "Moda masculina essencial - Camiseta em Algodão de Alta Qualidade"
-          4. "Camiseta Branca Masculina para Looks Versáteis"
-          5. "Camiseta Casual Branca com Estilo Moderno"
-
-<b>Descrição:</b>
-Apresentamos esta camiseta masculina branca, vestida por modelo real, perfeita para ocasiões casuais ou looks modernos. Tecido macio, caimento impecável e conforto garantido.
-
-<b>Tamanhos:</b>
-P: 50cm x 70cm
-M: 52cm x 72cm
-G: 54cm x 74cm
-GG: 56cm x 76cm
-
-<b>Imagens geradas:</b><div class='imagens'>
-<img src="https://via.placeholder.com/500x600.png?text=Modelo+1" />
-<img src="https://via.placeholder.com/500x600.png?text=Modelo+2" />
-<img src="https://via.placeholder.com/500x600.png?text=Modelo+3" />
-<img src="https://via.placeholder.com/500x600.png?text=Modelo+4" />
-<img src="https://via.placeholder.com/500x600.png?text=Modelo+5" />
-</div>`;
-
-        document.getElementById('mensagem').value = '';
-        document.getElementById('imagem').value = '';
-      }, 1500);
+      simulateBotResponse(message);
     }
+
+    function simulateBotResponse(message) {
+      const botMsg = document.createElement("div");
+      botMsg.className = "bot-msg";
+      if (message.toLowerCase().includes("imagem")) {
+        botMsg.textContent = "Recebi sua imagem! Em instantes vou gerar as 5 variações com modelo vestindo a peça e enviar os títulos e descrição formatados.";
+      } else {
+        botMsg.textContent = "Obrigado pela mensagem! Poderia complementar com detalhes do tecido, uso, tamanhos, etc.?";
+      }
+      chatBox.appendChild(botMsg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    imageInput.addEventListener("change", () => {
+      imagePreview.innerHTML = "";
+      const files = imageInput.files;
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          imagePreview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
   </script>
 </body>
 </html>
