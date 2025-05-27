@@ -6,89 +6,57 @@
     <title>Anúncio Fácil IA</title>
     <style>
       body {
+        font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
-        font-family: Arial, sans-serif;
         background-color: #ffffff;
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
+        color: #333;
       }
-
       header {
-        background-color: white;
-        color: #000000;
-        font-weight: bold;
+        background-color: #ffffff;
+        padding: 16px;
+        border-bottom: 1px solid #ddd;
         font-size: 18px;
-        padding: 10px 20px;
-        border-bottom: 1px solid #ccc;
+        font-weight: bold;
       }
-
-      .container {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 20px;
-        overflow-y: auto;
+      main {
+        max-width: 720px;
+        margin: 32px auto;
+        padding: 16px;
       }
-
-      .box {
-        max-width: 600px;
-        width: 100%;
-      }
-
-      .info {
-        background-color: #f1f1f1;
-        padding: 15px;
+      .info-box {
+        background: #f1f1f1;
         border-radius: 8px;
-        margin-bottom: 15px;
+        padding: 16px;
+        margin-bottom: 24px;
       }
-
-      .upload-area {
+      .upload-section {
+        margin-bottom: 16px;
+      }
+      .upload-preview {
         display: flex;
+        gap: 8px;
+        margin-top: 8px;
         flex-wrap: wrap;
-        gap: 10px;
-        align-items: center;
-        margin-bottom: 15px;
       }
-
-      .upload-area input[type="file"] {
-        display: none;
-      }
-
-      .upload-label {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-        font-size: 28px;
-        border: 2px dashed #7f56d9;
-        border-radius: 8px;
-        color: #7f56d9;
-        cursor: pointer;
-      }
-
       .preview {
         position: relative;
-        width: 80px;
-        height: 80px;
+        width: 90px;
+        height: 90px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        overflow: hidden;
       }
-
       .preview img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        border-radius: 6px;
-        border: 1px solid #ccc;
       }
-
       .remove-btn {
         position: absolute;
-        top: -6px;
-        right: -6px;
-        background: #ff3b30;
+        top: -8px;
+        right: -8px;
+        background: red;
         color: white;
         border: none;
         border-radius: 50%;
@@ -97,154 +65,153 @@
         font-size: 12px;
         cursor: pointer;
       }
-
       .chat-box {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        margin-bottom: 15px;
-      }
-
-      .chat-msg {
-        padding: 10px;
-        background-color: #f4f4f4;
-        border-radius: 6px;
-        white-space: pre-line;
-      }
-
-      .user-msg {
-        align-self: flex-end;
-        background-color: #e0e0ff;
-      }
-
-      .input-area {
-        display: flex;
-        align-items: center;
         border: 1px solid #ccc;
-        border-radius: 6px;
-        padding: 6px 10px;
+        border-radius: 8px;
+        padding: 12px;
+        min-height: 200px;
+        margin-bottom: 16px;
       }
-
-      .input-area input {
+      .chat-msg {
+        margin: 8px 0;
+      }
+      .chat-msg.user {
+        text-align: right;
+        color: #0b5ed7;
+      }
+      .chat-msg.bot {
+        text-align: left;
+        color: #444;
+      }
+      .input-row {
+        display: flex;
+        gap: 8px;
+      }
+      .input-row textarea {
         flex: 1;
-        border: none;
-        outline: none;
-        font-size: 14px;
+        resize: none;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
       }
-
-      .input-area button {
-        background: none;
+      .input-row button {
+        padding: 0 16px;
+        font-size: 18px;
+        background: #0b5ed7;
+        color: white;
         border: none;
-        font-size: 20px;
+        border-radius: 8px;
         cursor: pointer;
-        color: #7f56d9;
       }
     </style>
   </head>
   <body>
     <header>Anúncio Fácil IA</header>
-    <div class="container">
-      <div class="box">
-        <div class="info">
-          <p><strong>O que este assistente faz:</strong></p>
-          <ul>
-            <li>✓ Gera 5 títulos com palavras-chave</li>
-            <li>✓ Cria descrição profissional e persuasiva</li>
-            <li>✓ Gera 5 imagens com base na imagem enviada (modelo vestindo a peça)</li>
-          </ul>
-        </div>
-
-        <div class="upload-area" id="uploadArea">
-          <label class="upload-label" for="fileInput">+</label>
-          <input type="file" id="fileInput" accept="image/png" multiple />
-        </div>
-
-        <div class="chat-box" id="chat"></div>
-
-        <form id="form" class="input-area">
-          <input type="text" id="prompt" placeholder="Descreva sua peça de roupa aqui..." required />
-          <button type="submit">➤</button>
-        </form>
+    <main>
+      <div class="info-box">
+        <p><strong>O que este assistente faz:</strong></p>
+        <ul>
+          <li>✓ Gera 5 títulos com palavras-chave</li>
+          <li>✓ Cria descrição profissional e persuasiva</li>
+          <li>✓ Gera 5 imagens com base na imagem enviada (modelo vestindo a peça)</li>
+        </ul>
       </div>
-    </div>
+
+      <div class="upload-section">
+        <label><strong>Escolher imagens da peça (.png):</strong></label>
+        <div style="margin-top: 6px">
+          <label style="cursor:pointer;color:#7d4dff;font-size:24px">+
+            <input
+              id="imgInput"
+              type="file"
+              accept="image/png"
+              multiple
+              style="display:none"
+              onchange="handleFiles(this.files)"
+            />
+          </label>
+        </div>
+        <div id="preview" class="upload-preview"></div>
+      </div>
+
+      <div class="chat-box" id="chat"></div>
+
+      <div class="input-row">
+        <textarea id="input" rows="2" placeholder="Descreva sua peça de roupa aqui..."></textarea>
+        <button onclick="sendMessage()">&#10148;</button>
+      </div>
+    </main>
 
     <script>
-      const fileInput = document.getElementById('fileInput');
-      const uploadArea = document.getElementById('uploadArea');
       const chat = document.getElementById('chat');
-      const form = document.getElementById('form');
-      const promptInput = document.getElementById('prompt');
-      const files = [];
+      const input = document.getElementById('input');
+      const preview = document.getElementById('preview');
+      let imageFiles = [];
 
-      fileInput.addEventListener('change', () => {
-        [...fileInput.files].forEach((file) => {
-          if (files.length >= 3) return alert('Limite de 3 imagens');
-
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const div = document.createElement('div');
-            div.className = 'preview';
-            div.innerHTML = `
-              <img src="${e.target.result}" alt="preview">
-              <button class="remove-btn">x</button>
-            `;
-            div.querySelector('button').onclick = () => {
-              uploadArea.removeChild(div);
-              const index = files.indexOf(file);
-              if (index > -1) files.splice(index, 1);
+      function handleFiles(files) {
+        for (let file of files) {
+          if (file.type === 'image/png' && imageFiles.length < 3) {
+            imageFiles.push(file);
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              const div = document.createElement('div');
+              div.className = 'preview';
+              div.innerHTML = `<img src="${e.target.result}"/><button class='remove-btn' onclick='removeImage(this)'>x</button>`;
+              preview.appendChild(div);
             };
-            uploadArea.appendChild(div);
-          };
-          reader.readAsDataURL(file);
-          files.push(file);
-        });
-        fileInput.value = '';
-      });
+            reader.readAsDataURL(file);
+          }
+        }
+      }
 
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const prompt = promptInput.value.trim();
-        if (!prompt) return;
+      function removeImage(btn) {
+        const index = [...preview.children].indexOf(btn.parentNode);
+        imageFiles.splice(index, 1);
+        btn.parentNode.remove();
+      }
 
-        const userMsg = document.createElement('div');
-        userMsg.className = 'chat-msg user-msg';
-        userMsg.textContent = prompt;
-        chat.appendChild(userMsg);
+      function appendMessage(content, isUser = false) {
+        const msg = document.createElement('div');
+        msg.className = 'chat-msg ' + (isUser ? 'user' : 'bot');
+        msg.textContent = content;
+        chat.appendChild(msg);
+        chat.scrollTop = chat.scrollHeight;
+      }
 
-        const botMsg = document.createElement('div');
-        botMsg.className = 'chat-msg';
-        botMsg.textContent = 'Gerando anúncio com base na imagem...';
-        chat.appendChild(botMsg);
+      async function sendMessage() {
+        const text = input.value.trim();
+        if (!text) return;
+        appendMessage(text, true);
+        input.value = '';
+        appendMessage('Gerando anúncio com base na imagem...');
 
         try {
-          const openaiKey = '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'; // substituído no backend por sua chave
-
           const formData = new FormData();
-          formData.append('prompt', prompt);
-          files.forEach((f, i) => formData.append(`image${i + 1}`, f));
+          formData.append('prompt', text);
+          imageFiles.forEach((file, i) => {
+            formData.append(`image${i + 1}`, file);
+          });
 
-          const response = await fetch('https://api.anunciofacil.app/processar', {
+          const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
-            headers: { 'Authorization': `Bearer ${openaiKey}` },
-            body: formData
+            headers: {
+              'Authorization': 'Bearer sk-proj-H9g9JqjdyDYTj-K81t4YPK1b3bQYn17-BzR1iSVcLLac4qwGW_jm5ap-1qy3_SocWg3Ikph4T3BlbkFJGUUz6H16PoATyJ0HUZHoa3M065_viQ_0uuUHgUtlbl2Le_jgMuoxgzrZHC9uM4cQMxc0-L0A',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              model: 'gpt-4-turbo',
+              messages: [{ role: 'user', content: text }],
+              temperature: 0.7
+            })
           });
 
           const data = await response.json();
-
-          botMsg.textContent = data.output;
-          data.images?.forEach(url => {
-            const img = document.createElement('img');
-            img.src = url;
-            img.style.maxWidth = '100%';
-            chat.appendChild(img);
-          });
-
-        } catch (err) {
-          botMsg.textContent = 'Erro ao gerar o anúncio. Tente novamente.';
+          const reply = data.choices?.[0]?.message?.content || '[Erro ao gerar resposta]';
+          appendMessage(reply);
+        } catch (e) {
+          appendMessage('Erro ao gerar o anúncio. Tente novamente.');
         }
-
-        form.reset();
-      });
+      }
     </script>
   </body>
 </html>
