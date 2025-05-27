@@ -45,6 +45,23 @@ function appendMessage(content, isBot) {
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
+async function uploadImage(file) {
+  const res = await fetch("https://api.openai.com/v1/files", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`
+    },
+    body: (() => {
+      const data = new FormData();
+      data.append("purpose", "assistants");
+      data.append("file", file);
+      return data;
+    })()
+  });
+  const data = await res.json();
+  return data.id;
+}
+
 async function sendMessage() {
   const text = chatInput.value.trim();
   if (!text && imageFiles.length === 0) return;
@@ -64,6 +81,20 @@ async function sendMessage() {
     const threadData = await threadRes.json();
     const threadId = threadData.id;
 
+    const uploadedIds = [];
+    for (let file of imageFiles) {
+      const fileId = await uploadImage(file);
+      uploadedIds.push({ type: "image_file", image_file: { file_id: fileId } });
+    }
+
+    const messageBody = {
+      role: "user",
+      content: [
+        { type: "text", text: text },
+        ...uploadedIds
+      ]
+    };
+
     await fetch(`https://api.openai.com/v1/threads/${threadId}/messages`, {
       method: "POST",
       headers: {
@@ -71,10 +102,7 @@ async function sendMessage() {
         "OpenAI-Beta": "assistants=v1",
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        role: "user",
-        content: text
-      })
+      body: JSON.stringify(messageBody)
     });
 
     const runRes = await fetch(`https://api.openai.com/v1/threads/${threadId}/runs`, {
