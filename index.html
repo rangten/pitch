@@ -2,29 +2,128 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Anúncio Fácil IA</title>
-    <style>
-        body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; }
-        h1 { color: #333; }
-        input[type="file"], input[type="text"], button {
-            display: block; width: 100%; margin: 10px 0; padding: 10px;
-        }
-        .result { margin-top: 20px; background: #eef; padding: 15px; border-radius: 6px; }
-        .image-preview { margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; }
-        .image-preview img { max-width: 100px; border-radius: 4px; }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Anúncio Fácil IA</title>
+  <style>
+    body {
+      background-color: #f0f2f5;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .chat-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      height: 95vh;
+    }
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 10px;
+    }
+    .message {
+      background: #f1f1f1;
+      border-radius: 6px;
+      padding: 10px;
+      margin: 8px 0;
+      max-width: 80%;
+    }
+    .user {
+      align-self: flex-end;
+      background: #daf0ff;
+    }
+    .bot {
+      align-self: flex-start;
+      background: #e4e4e4;
+    }
+    .input-area {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding-top: 10px;
+      border-top: 1px solid #ccc;
+    }
+    .input-area input[type="file"] {
+      display: none;
+    }
+    .upload-preview {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      gap: 10px;
+    }
+    .upload-preview div {
+      position: relative;
+    }
+    .upload-preview img {
+      max-width: 80px;
+      border-radius: 5px;
+    }
+    .upload-preview button {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 12px;
+      width: 18px;
+      height: 18px;
+    }
+    #chatInput {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    #sendBtn {
+      font-size: 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+    }
+    #plusBtn {
+      background: #ccc;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 24px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Anúncio Fácil IA</h1>
-        <input type="text" id="produto" placeholder="Digite o nome do produto">
-        <input type="file" id="imagens" accept="image/*" multiple>
-        <button onclick="enviarParaGPT()">Gerar Anúncio</button>
-        <div class="result" id="resultado"></div>
-        <div class="image-preview" id="previews"></div>
+  <div class="chat-container">
+    <div class="messages" id="messages">
+      <div class="message bot">
+        Olá! Sou seu assistente do Anúncio Fácil IA. Envie o nome do produto e até 5 imagens para gerar um anúncio completo!
+      </div>
     </div>
-    <script src="script.js"></script>
+
+    <div class="upload-preview" id="imagePreview"></div>
+
+    <div class="input-area">
+      <button id="plusBtn" onclick="document.getElementById('imageInput').click()">+</button>
+      <input type="file" id="imageInput" multiple accept="image/*" onchange="previewImages()" />
+      <input type="text" id="chatInput" placeholder="Digite aqui..." onkeydown="if(event.key==='Enter'){sendMessage();}" />
+      <button id="sendBtn" onclick="sendMessage()">➤</button>
+    </div>
+  </div>
+
+  <script src="chat-script.js"></script>
 </body>
 </html>
