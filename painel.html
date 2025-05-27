@@ -6,194 +6,245 @@
     <title>Anúncio Fácil IA</title>
     <style>
       body {
-        font-family: Arial, sans-serif;
-        background: #f0f4f9;
         margin: 0;
         padding: 0;
-        color: #202123;
+        font-family: Arial, sans-serif;
+        background-color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
       }
+
+      header {
+        background-color: white;
+        color: #000000;
+        font-weight: bold;
+        font-size: 18px;
+        padding: 10px 20px;
+        border-bottom: 1px solid #ccc;
+      }
+
       .container {
-        max-width: 800px;
-        margin: 0 auto;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         padding: 20px;
+        overflow-y: auto;
       }
-      h1 {
-        font-size: 1.5em;
-        margin-bottom: 20px;
-        text-align: center;
+
+      .box {
+        max-width: 600px;
+        width: 100%;
       }
+
       .info {
-        background: #dfe7f3;
-        border-left: 5px solid #8e8ea0;
-        padding: 10px 15px;
-        margin-bottom: 20px;
+        background-color: #f1f1f1;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
       }
-      input[type="file"] {
-        margin-bottom: 10px;
-      }
-      .thumbs {
+
+      .upload-area {
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
-        margin-bottom: 10px;
+        align-items: center;
+        margin-bottom: 15px;
       }
-      .thumb-container {
+
+      .upload-area input[type="file"] {
+        display: none;
+      }
+
+      .upload-label {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        font-size: 28px;
+        border: 2px dashed #7f56d9;
+        border-radius: 8px;
+        color: #7f56d9;
+        cursor: pointer;
+      }
+
+      .preview {
         position: relative;
-        display: inline-block;
+        width: 80px;
+        height: 80px;
       }
-      .thumb-container img {
-        width: 100px;
+
+      .preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 6px;
         border: 1px solid #ccc;
-        border-radius: 5px;
       }
+
       .remove-btn {
         position: absolute;
-        top: -5px;
-        right: -5px;
-        background: #f44336;
+        top: -6px;
+        right: -6px;
+        background: #ff3b30;
         color: white;
         border: none;
         border-radius: 50%;
-        cursor: pointer;
         width: 20px;
         height: 20px;
         font-size: 12px;
-      }
-      .chat-box {
-        border: 1px solid #ccc;
-        background: white;
-        padding: 10px;
-        border-radius: 5px;
-        max-height: 400px;
-        overflow-y: auto;
-        margin-bottom: 10px;
-      }
-      .chat-message {
-        margin-bottom: 10px;
-      }
-      .user {
-        text-align: right;
-        color: #2b78e4;
-      }
-      .bot {
-        text-align: left;
-        color: #000;
-      }
-      .form-row {
-        display: flex;
-        gap: 10px;
-      }
-      .form-row input[type="text"] {
-        flex: 1;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-      }
-      .form-row button {
-        padding: 10px 20px;
-        border: none;
-        background-color: #10a37f;
-        color: white;
-        border-radius: 5px;
         cursor: pointer;
+      }
+
+      .chat-box {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 15px;
+      }
+
+      .chat-msg {
+        padding: 10px;
+        background-color: #f4f4f4;
+        border-radius: 6px;
+        white-space: pre-line;
+      }
+
+      .user-msg {
+        align-self: flex-end;
+        background-color: #e0e0ff;
+      }
+
+      .input-area {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        padding: 6px 10px;
+      }
+
+      .input-area input {
+        flex: 1;
+        border: none;
+        outline: none;
+        font-size: 14px;
+      }
+
+      .input-area button {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: #7f56d9;
       }
     </style>
   </head>
   <body>
+    <header>Anúncio Fácil IA</header>
     <div class="container">
-      <h1>Anúncio Fácil IA</h1>
-      <div class="info">
-        <strong>O que este assistente faz:</strong>
-        <ul>
-          <li>Gera 5 títulos com palavras-chave</li>
-          <li>Cria descrição profissional e persuasiva</li>
-          <li>Gera 5 imagens com base na imagem enviada (modelo vestindo a peça)</li>
-        </ul>
-      </div>
+      <div class="box">
+        <div class="info">
+          <p><strong>O que este assistente faz:</strong></p>
+          <ul>
+            <li>✓ Gera 5 títulos com palavras-chave</li>
+            <li>✓ Cria descrição profissional e persuasiva</li>
+            <li>✓ Gera 5 imagens com base na imagem enviada (modelo vestindo a peça)</li>
+          </ul>
+        </div>
 
-      <label><strong>Escolher imagens da peça (.png):</strong></label>
-      <input type="file" id="fileInput" accept="image/png" multiple />
-      <div class="thumbs" id="preview"></div>
+        <div class="upload-area" id="uploadArea">
+          <label class="upload-label" for="fileInput">+</label>
+          <input type="file" id="fileInput" accept="image/png" multiple />
+        </div>
 
-      <div class="chat-box" id="chat"></div>
+        <div class="chat-box" id="chat"></div>
 
-      <div class="form-row">
-        <input type="text" id="msg" placeholder="Descreva sua peça de roupa aqui..." />
-        <button onclick="sendMessage()">Enviar</button>
+        <form id="form" class="input-area">
+          <input type="text" id="prompt" placeholder="Descreva sua peça de roupa aqui..." required />
+          <button type="submit">➤</button>
+        </form>
       </div>
     </div>
 
     <script>
-      const chat = document.getElementById('chat');
-      const msg = document.getElementById('msg');
       const fileInput = document.getElementById('fileInput');
-      const preview = document.getElementById('preview');
-      let files = [];
+      const uploadArea = document.getElementById('uploadArea');
+      const chat = document.getElementById('chat');
+      const form = document.getElementById('form');
+      const promptInput = document.getElementById('prompt');
+      const files = [];
 
       fileInput.addEventListener('change', () => {
-        preview.innerHTML = '';
-        files = Array.from(fileInput.files);
-        files.forEach((file, i) => {
+        [...fileInput.files].forEach((file) => {
+          if (files.length >= 3) return alert('Limite de 3 imagens');
+
           const reader = new FileReader();
-          reader.onload = () => {
-            const container = document.createElement('div');
-            container.className = 'thumb-container';
-            container.innerHTML = `
-              <img src="${reader.result}" alt="preview" />
-              <button class="remove-btn" onclick="removeImage(${i})">&times;</button>
+          reader.onload = (e) => {
+            const div = document.createElement('div');
+            div.className = 'preview';
+            div.innerHTML = `
+              <img src="${e.target.result}" alt="preview">
+              <button class="remove-btn">x</button>
             `;
-            preview.appendChild(container);
+            div.querySelector('button').onclick = () => {
+              uploadArea.removeChild(div);
+              const index = files.indexOf(file);
+              if (index > -1) files.splice(index, 1);
+            };
+            uploadArea.appendChild(div);
           };
           reader.readAsDataURL(file);
+          files.push(file);
         });
+        fileInput.value = '';
       });
 
-      function removeImage(index) {
-        files.splice(index, 1);
-        fileInput.value = '';
-        const dt = new DataTransfer();
-        files.forEach(file => dt.items.add(file));
-        fileInput.files = dt.files;
-        fileInput.dispatchEvent(new Event('change'));
-      }
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const prompt = promptInput.value.trim();
+        if (!prompt) return;
 
-      function appendMessage(sender, text) {
-        const div = document.createElement('div');
-        div.className = 'chat-message ' + sender;
-        div.innerText = text;
-        chat.appendChild(div);
-        chat.scrollTop = chat.scrollHeight;
-      }
+        const userMsg = document.createElement('div');
+        userMsg.className = 'chat-msg user-msg';
+        userMsg.textContent = prompt;
+        chat.appendChild(userMsg);
 
-      async function sendMessage() {
-        const text = msg.value.trim();
-        if (!text) return;
-        appendMessage('user', text);
-        msg.value = '';
-
-        const formData = new FormData();
-        formData.append('prompt', text);
-        files.forEach(file => formData.append('images', file));
-
-        appendMessage('bot', 'Gerando anúncio com base na imagem...');
+        const botMsg = document.createElement('div');
+        botMsg.className = 'chat-msg';
+        botMsg.textContent = 'Gerando anúncio com base na imagem...';
+        chat.appendChild(botMsg);
 
         try {
-          const response = await fetch('https://seu-backend-api.com/anuncio', {
+          const openaiKey = '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'; // substituído no backend por sua chave
+
+          const formData = new FormData();
+          formData.append('prompt', prompt);
+          files.forEach((f, i) => formData.append(`image${i + 1}`, f));
+
+          const response = await fetch('https://api.anunciofacil.app/processar', {
             method: 'POST',
-            body: formData,
+            headers: { 'Authorization': `Bearer ${openaiKey}` },
+            body: formData
           });
+
           const data = await response.json();
-          appendMessage('bot', data.resposta);
-          data.imagens.forEach(url => {
+
+          botMsg.textContent = data.output;
+          data.images?.forEach(url => {
             const img = document.createElement('img');
             img.src = url;
             img.style.maxWidth = '100%';
             chat.appendChild(img);
           });
-        } catch (error) {
-          appendMessage('bot', 'Erro ao gerar anúncio.');
+
+        } catch (err) {
+          botMsg.textContent = 'Erro ao gerar o anúncio. Tente novamente.';
         }
-      }
+
+        form.reset();
+      });
     </script>
   </body>
 </html>
