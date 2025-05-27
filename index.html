@@ -1,38 +1,30 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Anúncio Fácil IA - Login</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #f5f5f5; text-align: center; padding: 40px; }
-    .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 10px; }
-    input { width: 100%; padding: 10px; margin: 10px 0; font-size: 16px; }
-    button { background: #6a1b9a; color: white; padding: 10px 20px; border: none; font-size: 16px; cursor: pointer; border-radius: 5px; }
-    .link { margin-top: 10px; display: block; }
-  </style>
+    <meta charset="UTF-8">
+    <title>Anúncio Fácil IA</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; }
+        h1 { color: #333; }
+        input[type="file"], input[type="text"], button {
+            display: block; width: 100%; margin: 10px 0; padding: 10px;
+        }
+        .result { margin-top: 20px; background: #eef; padding: 15px; border-radius: 6px; }
+        .image-preview { margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .image-preview img { max-width: 100px; border-radius: 4px; }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Anúncio Fácil IA</h2>
-    <p>Digite seu e-mail para entrar</p>
-    <input type="email" id="email" placeholder="seuemail@exemplo.com" />
-    <button onclick="login()">Entrar</button>
-    <a href="planos.html" class="link">Ainda não tem acesso? Escolha um plano</a>
-  </div>
-
-  <script>
-    function login() {
-      const email = document.getElementById("email").value.trim().toLowerCase();
-      const liberados = JSON.parse(localStorage.getItem("usuariosLiberados") || "[]");
-
-      if (email === "rangelfurlaneto@gmail.com" || liberados.includes(email)) {
-        localStorage.setItem("usuarioLogado", email);
-        window.location.href = "painel.html";
-      } else {
-        alert("Este e-mail ainda não possui acesso liberado.");
-      }
-    }
-  </script>
+    <div class="container">
+        <h1>Anúncio Fácil IA</h1>
+        <input type="text" id="produto" placeholder="Digite o nome do produto">
+        <input type="file" id="imagens" accept="image/*" multiple>
+        <button onclick="enviarParaGPT()">Gerar Anúncio</button>
+        <div class="result" id="resultado"></div>
+        <div class="image-preview" id="previews"></div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
