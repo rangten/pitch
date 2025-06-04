@@ -1,84 +1,98 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Anúncio Fácil IA</title>
   <style>
     body {
-      background-color: #f0f2f5;
       font-family: Arial, sans-serif;
+      background: #fff;
       margin: 0;
-      padding: 0;
     }
-    .chat-container {
+    header {
+      background: #fff;
+      padding: 16px;
+      border-bottom: 1px solid #ddd;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    .container {
       max-width: 800px;
       margin: 0 auto;
       padding: 20px;
-      background: #ffffff;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .chat-box {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 10px;
+      background-color: #f7f7f8;
+      height: 500px;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
-      height: 95vh;
-    }
-    .intro {
-      text-align: center;
-      margin-bottom: 10px;
-    }
-    .intro h1 {
-      margin-bottom: 5px;
-      font-size: 24px;
-      color: #333;
-    }
-    .intro p {
-      font-size: 14px;
-      color: #555;
-    }
-    .messages {
-      flex: 1;
-      overflow-y: auto;
-      padding-bottom: 10px;
     }
     .message {
-      background: #f1f1f1;
-      border-radius: 6px;
       padding: 10px;
-      margin: 8px 0;
-      max-width: 80%;
+      margin: 5px 0;
+      border-radius: 10px;
+      max-width: 70%;
+      white-space: pre-wrap;
     }
     .user {
+      background-color: #d2e4ff;
       align-self: flex-end;
-      background: #daf0ff;
+      margin-left: auto;
     }
     .bot {
+      background-color: #e2e2e2;
       align-self: flex-start;
-      background: #e4e4e4;
+      margin-right: auto;
     }
     .input-area {
       display: flex;
-      gap: 10px;
       align-items: center;
-      padding-top: 10px;
-      border-top: 1px solid #ccc;
+      gap: 10px;
+      margin-top: 15px;
     }
-    .input-area input[type="file"] {
+    input[type="file"] {
       display: none;
     }
-    .upload-preview {
-      display: flex;
-      flex-wrap: wrap;
-      margin-top: 10px;
-      gap: 10px;
+    label[for="file-upload"] {
+      font-size: 24px;
+      cursor: pointer;
+      color: #555;
+      padding: 5px;
     }
-    .upload-preview div {
-      position: relative;
-    }
-    .upload-preview img {
-      max-width: 80px;
+    .input-message {
+      flex-grow: 1;
+      padding: 8px;
+      border: 1px solid #ccc;
       border-radius: 5px;
     }
-    .upload-preview button {
+    button {
+      background-color: #343541;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .preview {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .preview-item {
+      position: relative;
+    }
+    .preview img {
+      width: 80px;
+      height: auto;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .remove-btn {
       position: absolute;
       top: -8px;
       right: -8px;
@@ -86,63 +100,125 @@
       color: white;
       border: none;
       border-radius: 50%;
-      cursor: pointer;
-      font-size: 12px;
-      width: 18px;
-      height: 18px;
-    }
-    #chatInput {
-      flex: 1;
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    #sendBtn {
-      font-size: 20px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      cursor: pointer;
-    }
-    #plusBtn {
-      background: #ccc;
-      border: none;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      font-size: 24px;
+      width: 20px;
+      height: 20px;
+      font-size: 14px;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <div class="chat-container">
-    <div class="intro">
-      <h1>Anúncio Fácil IA</h1>
-      <p><strong>O que oferecemos:</strong> Gerador de 5 títulos otimizados. Descrição completa do produto. 5 imagens em alta qualidade.<br>
-      <strong>Como funciona:</strong> Faça uma descrição simples do seu produto. Exemplo: ‘camiseta masculina’. Envie uma foto do produto. Pronto! Nosso assistente gera tudo para você.</p>
-    </div>
-
-    <div class="messages" id="messages">
+  <header>Anúncio Fácil IA</header>
+  <div class="container">
+    <div class="chat-box" id="chat">
       <div class="message bot">
-        Olá! Sou seu assistente do Anúncio Fácil IA. Envie o nome do produto e até 5 imagens para gerar um anúncio completo!
+        👋 Olá! Envie uma descrição da peça e até 3 imagens (.png). Eu vou gerar 5 imagens com modelo vestindo a peça, uma descrição profissional e 5 títulos otimizados.
       </div>
     </div>
-
-    <div class="upload-preview" id="imagePreview"></div>
-
+    <div class="preview" id="preview"></div>
     <div class="input-area">
-      <button id="plusBtn" onclick="document.getElementById('imageInput').click()">+</button>
-      <input type="file" id="imageInput" multiple accept="image/*" onchange="previewImages()" />
-      <input type="text" id="chatInput" placeholder="Digite aqui..." onkeydown="if(event.key==='Enter'){sendMessage();}" />
-      <button id="sendBtn" onclick="sendMessage()">➤</button>
+      <label for="file-upload">+</label>
+      <input type="file" id="file-upload" accept="image/png" multiple>
+      <input type="text" id="user-input" class="input-message" placeholder="Descreva a peça...">
+      <button onclick="sendMessage()">➤</button>
     </div>
   </div>
 
-  <script src="chat-script.js"></script>
+  <script>
+    const chat = document.getElementById('chat');
+    const input = document.getElementById('user-input');
+    const fileUpload = document.getElementById('file-upload');
+    const preview = document.getElementById('preview');
+    const apiKey = "sk-proj-H9gqTjgdYDTyj-K818I4YPK1b3bQYn17-BzR1iSVcLLac4qwGwVjm5ap-Iqy3SocWg3Ikqh4T3BlbkFJGUlZ6Hl6PoATyJQHUZhoa3M065_viQ_0uuUHgUtIbL2e_jgIMouxgzrZHC9wM4cQMxc0-L0A";
+
+    const uploadedImages = [];
+
+    fileUpload.addEventListener('change', () => {
+      const files = [...fileUpload.files];
+      files.forEach(file => uploadedImages.push(file));
+      updatePreview();
+    });
+
+    function updatePreview() {
+      preview.innerHTML = '';
+      uploadedImages.slice(0, 3).forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'preview-item';
+
+          const img = document.createElement('img');
+          img.src = e.target.result;
+
+          const remove = document.createElement('button');
+          remove.className = 'remove-btn';
+          remove.textContent = 'x';
+          remove.onclick = () => {
+            uploadedImages.splice(index, 1);
+            updatePreview();
+          };
+
+          wrapper.appendChild(img);
+          wrapper.appendChild(remove);
+          preview.appendChild(wrapper);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function appendMessage(text, type) {
+      const msg = document.createElement('div');
+      msg.className = 'message ' + type;
+      msg.textContent = text;
+      chat.appendChild(msg);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const message = input.value.trim();
+      if (!message) return;
+
+      appendMessage(message, 'user');
+      input.value = '';
+      appendMessage('🔄 Gerando anúncio com base na imagem...', 'bot');
+
+      try {
+        const payload = {
+          model: "gpt-4-turbo",
+          messages: [
+            {
+              role: "system",
+              content: "Você é um assistente de IA chamado Anúncio Fácil. Sua função é criar anúncios completos para roupas com base em uma descrição simples e uma imagem enviada pelo usuário. Gere 5 títulos otimizados com palavras-chave, uma descrição profissional e persuasiva, e mencione as medidas e materiais se forem informados. As imagens devem ser geradas com modelo vestindo a roupa em poses variadas, respeitando sempre a referência da imagem enviada."
+            },
+            {
+              role: "user",
+              content: message
+            }
+          ]
+        };
+
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+        const reply = data.choices?.[0]?.message?.content || '[Erro ao gerar resposta]';
+
+        const loading = chat.querySelector('.bot:last-child');
+        if (loading) loading.remove();
+
+        appendMessage(reply, 'bot');
+      } catch (error) {
+        const loading = chat.querySelector('.bot:last-child');
+        if (loading) loading.remove();
+        appendMessage('[Erro ao gerar resposta]', 'bot');
+      }
+    }
+  </script>
 </body>
 </html>
